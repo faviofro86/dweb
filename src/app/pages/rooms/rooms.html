@@ -1,0 +1,88 @@
+<div class="tabs">
+  <button class="tab" [class.active]="tab === 'mapa'" (click)="tab = 'mapa'">Estado de salas</button>
+  <button class="tab" [class.active]="tab === 'reservas'" (click)="tab = 'reservas'">Reservas</button>
+  <button class="tab" [class.active]="tab === 'timeline'" (click)="tab = 'timeline'">Timeline</button>
+</div>
+
+@if (tab === 'mapa') {
+  <div class="section-header"><h2 class="section-title">Estado actual de salas</h2><button class="btn btn-primary" (click)="openBooking()">＋ Nueva reserva</button></div>
+  <div class="grid-3">
+    @for (room of state.rooms(); track room.id) {
+      <article class="room-card" [class]="roomClass(room.estado)">
+        <div class="room-card-header">
+          <div><div class="room-name">{{ room.nombre }}</div><div class="room-floor">{{ room.piso }}</div></div>
+          <span class="badge" [class]="badgeClass(room.estado)"><span class="badge-dot"></span>{{ roomLabel(room.estado) }}</span>
+        </div>
+        <div class="muted small">👤 Capacidad: <strong>{{ room.capacidad }} personas</strong></div>
+        <div class="room-info">
+          @if (room.ocupante) { <div class="room-info-row">👤 {{ room.ocupante }}</div> }
+          @if (room.hora) { <div class="room-info-row">◷ {{ room.hora }}</div> }
+          <div class="room-info-row">{{ room.desc }}</div>
+        </div>
+        @if (room.estado === 'disponible') { <button class="btn btn-primary full" (click)="openBooking(room)">Reservar ahora</button> }
+      </article>
+    }
+  </div>
+}
+
+@if (tab === 'reservas') {
+  <div class="section-header"><h2 class="section-title">Reservas programadas</h2><button class="btn btn-primary" (click)="openBooking()">＋ Nueva reserva</button></div>
+  <div class="card table-scroll">
+    <table>
+      <thead><tr><th>Sala</th><th>Organizador</th><th>Fecha</th><th>Hora</th><th>Asistentes</th><th>Estado</th><th>Acción</th></tr></thead>
+      <tbody>
+        @for (booking of state.bookings(); track booking.id) {
+          <tr>
+            <td class="strong">{{ booking.sala }}</td><td>{{ booking.org }}</td><td>{{ booking.fecha }}</td>
+            <td class="strong">{{ booking.inicio }} – {{ booking.fin }}</td><td>{{ booking.asistentes }} pers.</td>
+            <td><span class="badge" [class.green]="booking.estado === 'en curso'" [class.blue]="booking.estado === 'confirmada'"><span class="badge-dot"></span>{{ booking.estado === 'en curso' ? 'En curso' : 'Confirmada' }}</span></td>
+            <td><button class="action-btn danger" title="Cancelar" (click)="cancel(booking.id)">🗑</button></td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}
+
+@if (tab === 'timeline') {
+  <div class="section-header"><h2 class="section-title">Disponibilidad hoy (08:00 – 20:00)</h2></div>
+  <div class="card timeline-wrap">
+    <div class="timeline">
+      <div class="tl-header">Sala</div>
+      @for (hour of hours; track hour) { <div class="tl-header">{{ hour }}:00</div> }
+      @for (room of state.rooms(); track room.id) {
+        <div class="tl-room">{{ room.nombre.replace('Sala ', '') }}</div>
+        @for (hour of hours; track hour) {
+          @let booking = bookingAt(room, hour);
+          <div class="tl-slot">
+            <div class="tl-block" [class.occupied]="booking?.estado === 'en curso'" [class.busy]="booking?.estado === 'confirmada'">{{ booking?.org?.split(' ')?.[0] || '' }}</div>
+          </div>
+        }
+      }
+    </div>
+  </div>
+}
+
+@if (modalOpen) {
+  <div class="modal-overlay active" (click)="modalOpen = false">
+    <form class="modal" (click)="$event.stopPropagation()" (ngSubmit)="save()">
+      <div class="modal-header"><h2 class="modal-title">Reservar sala de reunión</h2><button type="button" class="modal-close" (click)="modalOpen = false">✕</button></div>
+      <div class="modal-body">
+        <div class="form-row">
+          <div class="form-group"><label>Sala *</label><select name="sala" [(ngModel)]="form.sala"><option value="">Seleccionar sala...</option>@for (room of state.rooms(); track room.id) { <option [value]="room.nombre">{{ room.nombre }} ({{ room.capacidad }} pers.)</option> }</select></div>
+          <div class="form-group"><label>Organizador *</label><input name="org" [(ngModel)]="form.org" placeholder="Nombre del responsable"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Fecha *</label><input type="date" name="fecha" [(ngModel)]="form.fecha"></div>
+          <div class="form-group"><label>N° asistentes</label><input type="number" name="asistentes" [(ngModel)]="form.asistentes" min="1"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Hora inicio *</label><input type="time" name="inicio" [(ngModel)]="form.inicio"></div>
+          <div class="form-group"><label>Hora fin *</label><input type="time" name="fin" [(ngModel)]="form.fin"></div>
+        </div>
+        <div class="form-group"><label>Descripción de la reunión</label><textarea name="desc" [(ngModel)]="form.desc" placeholder="Tema, objetivo..."></textarea></div>
+      </div>
+      <div class="modal-footer"><button type="button" class="btn btn-ghost" (click)="modalOpen = false">Cancelar</button><button class="btn btn-primary">Confirmar reserva</button></div>
+    </form>
+  </div>
+}
