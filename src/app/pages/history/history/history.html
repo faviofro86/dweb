@@ -1,0 +1,11 @@
+<div class="section-header"><h2 class="section-title">Historial de actividad</h2></div>
+<div class="card table-scroll">
+  <table>
+    <thead><tr><th>Fecha/Hora</th><th>Tipo</th><th>Descripción</th><th>Usuario</th></tr></thead>
+    <tbody>
+      @for (activity of state.activity(); track $index) {
+        <tr><td class="strong">{{ activity.fecha }}</td><td><span class="badge capitalize" [class]="badgeClass(activity.tipo)">{{ activity.tipo }}</span></td><td>{{ activity.desc }}</td><td class="muted">{{ activity.user }}</td></tr>
+      }
+    </tbody>
+  </table>
+</div>

@@ -7,6 +7,7 @@ export const routes: Routes = [
     component: Layout,
     children: [
       { path: 'dashboard', title: 'Dashboard', data: { title: 'Dashboard' }, loadComponent: () => import('./pages/dashboard/dashboard').then((m) => m.Dashboard) },
+      { path: 'historial', title: 'Historial', data: { title: 'Historial de actividad' }, loadComponent: () => import('./pages/history/history').then((m) => m.History) },
       { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
     ],
   },
