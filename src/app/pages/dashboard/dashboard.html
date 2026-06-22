@@ -1,0 +1,55 @@
+<div class="stats-grid">
+  <article class="stat-card">
+    <div class="stat-icon blue">👥</div>
+    <div><div class="stat-value">{{ state.activeVisits().length }}</div><div class="stat-label">Visitas hoy</div><div class="stat-sub">en edificio</div></div>
+  </article>
+  <article class="stat-card">
+    <div class="stat-icon green">▦</div>
+    <div><div class="stat-value">{{ state.availableRooms().length }}</div><div class="stat-label">Salas disponibles</div><div class="stat-sub">de {{ state.rooms().length }} en total</div></div>
+  </article>
+  <article class="stat-card">
+    <div class="stat-icon orange">⌂</div>
+    <div><div class="stat-value">{{ state.todayBookings().length }}</div><div class="stat-label">Reuniones hoy</div><div class="stat-sub">programadas</div></div>
+  </article>
+  <article class="stat-card">
+    <div class="stat-icon red">!</div>
+    <div><div class="stat-value">{{ state.pendingVisits().length }}</div><div class="stat-label">Pendientes</div><div class="stat-sub">por aprobar</div></div>
+  </article>
+</div>
+
+<div class="grid-2">
+  <section>
+    <div class="section-header"><h2 class="section-title">Visitas recientes</h2></div>
+    <div class="card table-scroll">
+      <table>
+        <thead><tr><th>Visitante</th><th>Destino</th><th>Estado</th></tr></thead>
+        <tbody>
+          @for (visit of state.visits().slice(0, 5); track visit.id) {
+            <tr>
+              <td><div class="td-name"><span class="avatar-text">{{ initials(visit.nombre) }}</span>{{ visit.nombre }}</div></td>
+              <td class="muted">{{ visit.destino }}</td>
+              <td><span class="badge" [class.green]="visit.estado === 'dentro'" [class.gray]="visit.estado === 'salió'"><span class="badge-dot"></span>{{ visit.estado === 'dentro' ? 'En edificio' : 'Salió' }}</span></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section>
+    <div class="section-header"><h2 class="section-title">Reuniones de hoy</h2></div>
+    <div class="card table-scroll">
+      <table>
+        <thead><tr><th>Sala</th><th>Hora</th><th>Estado</th></tr></thead>
+        <tbody>
+          @for (booking of state.todayBookings().slice(0, 5); track booking.id) {
+            <tr>
+              <td class="strong">{{ booking.sala }}</td>
+              <td class="muted">{{ booking.inicio }}–{{ booking.fin }}</td>
+              <td><span class="badge" [class.green]="booking.estado === 'en curso'" [class.blue]="booking.estado === 'confirmada'"><span class="badge-dot"></span>{{ booking.estado === 'en curso' ? 'En curso' : 'Confirmada' }}</span></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>

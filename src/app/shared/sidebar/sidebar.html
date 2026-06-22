@@ -1,0 +1,55 @@
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24"><path d="M3 21h18V3L3 21zM10 10v4H8v-4h2zm6 0v4h-2v-4h2zm-3-3V5h2v2h-2z"/></svg>
+    </div>
+    <div class="logo-name">EdificioControl</div>
+    <div class="logo-sub">Sistema de Gestión</div>
+  </div>
+
+  <nav>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Principal</div>
+      <a class="nav-item" routerLink="/dashboard" routerLinkActive="active">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </a>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Gestión</div>
+      <a class="nav-item" routerLink="/visitas" routerLinkActive="active">
+        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Visitas
+        <span class="nav-badge">{{ state.activeVisits().length }}</span>
+      </a>
+      <a class="nav-item" routerLink="/salas" routerLinkActive="active">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        Salas de Reunión
+        <span class="nav-badge">{{ state.rooms().length - state.availableRooms().length }}</span>
+      </a>
+      <a class="nav-item" routerLink="/espacios" routerLinkActive="active">
+        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Espacios
+      </a>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Reportes</div>
+      <a class="nav-item" routerLink="/historial" routerLinkActive="active">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        Historial
+      </a>
+    </div>
+  </nav>
+
+  <div class="sidebar-bottom">
+    <div class="user-card">
+      <div class="user-avatar">JA</div>
+      <div>
+        <div class="user-name">José Admin</div>
+        <div class="user-role">Administrador</div>
+      </div>
+    </div>
+  </div>
+</aside>

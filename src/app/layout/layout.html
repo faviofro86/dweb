@@ -1,0 +1,13 @@
+<div class="shell">
+  <app-sidebar />
+  <main class="main">
+    <header class="topbar">
+      <div class="topbar-title">{{ title }}</div>
+      <div class="topbar-date">{{ date }}</div>
+    </header>
+    <section class="content">
+      <router-outlet />
+    </section>
+  </main>
+</div>
+<app-toast />
