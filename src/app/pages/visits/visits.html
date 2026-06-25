@@ -1,0 +1,97 @@
+<div class="tabs">
+  <button class="tab" [class.active]="tab === 'activas'" (click)="tab = 'activas'">Activas</button>
+  <button class="tab" [class.active]="tab === 'pendientes'" (click)="tab = 'pendientes'">Pendientes</button>
+  <button class="tab" [class.active]="tab === 'historial'" (click)="tab = 'historial'">Historial</button>
+</div>
+
+@if (tab === 'activas') {
+  <div class="section-header">
+    <h2 class="section-title">Visitas en el edificio</h2>
+    <button class="btn btn-primary" (click)="modalOpen = true">＋ Registrar visita</button>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Visitas activas</div>
+      <div class="search-box"><span>⌕</span><input [(ngModel)]="query" placeholder="Buscar visitante..."></div>
+    </div>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Visitante</th><th>DNI</th><th>Destino</th><th>Motivo</th><th>Entrada</th><th>Estado</th><th>Acción</th></tr></thead>
+        <tbody>
+          @for (visit of filteredVisits; track visit.id) {
+            <tr>
+              <td><div class="td-name"><span class="avatar-text">{{ initials(visit.nombre) }}</span><div><div class="strong">{{ visit.nombre }}</div><div class="small muted">{{ visit.empresa }}</div></div></div></td>
+              <td>{{ visit.dni }}</td><td>{{ visit.destino }}</td><td>{{ visit.motivo }}</td><td class="strong">{{ visit.entrada }}</td>
+              <td><span class="badge green"><span class="badge-dot"></span>En edificio</span></td>
+              <td><button class="btn btn-ghost compact" (click)="checkOut(visit.id)">Registrar salida</button></td>
+            </tr>
+          } @empty {
+            <tr><td colspan="7" class="empty-row">No hay visitas activas en el edificio</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+}
+
+@if (tab === 'pendientes') {
+  <div class="section-header"><h2 class="section-title">Visitas pendientes de aprobación</h2></div>
+  <div class="card table-scroll">
+    <table>
+      <thead><tr><th>Visitante</th><th>Destino</th><th>Fecha/Hora</th><th>Motivo</th><th>Acciones</th></tr></thead>
+      <tbody>
+        @for (visit of state.pendingVisits(); track visit.id) {
+          <tr>
+            <td><div class="td-name"><span class="avatar-text">{{ initials(visit.nombre) }}</span><div><div class="strong">{{ visit.nombre }}</div><div class="small muted">{{ visit.empresa }}</div></div></div></td>
+            <td>{{ visit.destino }}</td><td>{{ visit.fecha }}</td><td>{{ visit.motivo }}</td>
+            <td class="actions"><button class="btn btn-success compact" (click)="approve(visit.id)">Aprobar</button><button class="btn btn-outline-danger compact" (click)="reject(visit.id)">Rechazar</button></td>
+          </tr>
+        } @empty {
+          <tr><td colspan="5" class="empty-row">No hay visitas pendientes</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}
+
+@if (tab === 'historial') {
+  <div class="section-header"><h2 class="section-title">Historial de visitas</h2></div>
+  <div class="card table-scroll">
+    <table>
+      <thead><tr><th>Visitante</th><th>DNI</th><th>Destino</th><th>Entrada</th><th>Salida</th><th>Estado</th></tr></thead>
+      <tbody>
+        @for (visit of state.visits(); track visit.id) {
+          <tr>
+            <td><div class="td-name"><span class="avatar-text">{{ initials(visit.nombre) }}</span>{{ visit.nombre }}</div></td>
+            <td>{{ visit.dni }}</td><td>{{ visit.destino }}</td><td class="strong">{{ visit.entrada }}</td><td>{{ visit.salida || '—' }}</td>
+            <td><span class="badge" [class.green]="visit.estado === 'dentro'" [class.gray]="visit.estado === 'salió'"><span class="badge-dot"></span>{{ visit.estado === 'dentro' ? 'En edificio' : 'Salió' }}</span></td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}
+
+@if (modalOpen) {
+  <div class="modal-overlay active" (click)="modalOpen = false">
+    <form class="modal" (click)="$event.stopPropagation()" (ngSubmit)="save()">
+      <div class="modal-header"><h2 class="modal-title">Registrar visita</h2><button type="button" class="modal-close" (click)="modalOpen = false">✕</button></div>
+      <div class="modal-body">
+        <div class="form-row">
+          <div class="form-group"><label>Nombre completo *</label><input name="nombre" [(ngModel)]="form.nombre" placeholder="Ej: Carlos Mendoza"></div>
+          <div class="form-group"><label>DNI *</label><input name="dni" [(ngModel)]="form.dni" placeholder="12345678" maxlength="8" inputmode="numeric"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Empresa / Institución</label><input name="empresa" [(ngModel)]="form.empresa" placeholder="Opcional"></div>
+          <div class="form-group"><label>Destino (piso/área) *</label><select name="destino" [(ngModel)]="form.destino"><option value="">Seleccionar...</option><option>Piso 1 – Recepción</option><option>Piso 2 – Administración</option><option>Piso 3 – Gerencia</option><option>Piso 4 – RRHH</option><option>Piso 5 – TI</option><option>Sótano – Estacionamiento</option></select></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Persona a visitar *</label><input name="persona" [(ngModel)]="form.persona" placeholder="Nombre del anfitrión"></div>
+          <div class="form-group"><label>Motivo *</label><select name="motivo" [(ngModel)]="form.motivo"><option value="">Seleccionar...</option><option>Reunión de negocios</option><option>Entrega de documentos</option><option>Soporte técnico</option><option>Entrevista</option><option>Visita personal</option><option>Otro</option></select></div>
+        </div>
+        <div class="form-group"><label>Observaciones</label><textarea name="obs" [(ngModel)]="form.obs" placeholder="Notas adicionales..."></textarea></div>
+      </div>
+      <div class="modal-footer"><button type="button" class="btn btn-ghost" (click)="modalOpen = false">Cancelar</button><button class="btn btn-primary">Registrar entrada</button></div>
+    </form>
+  </div>
+}
