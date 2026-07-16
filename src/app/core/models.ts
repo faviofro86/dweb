@@ -1,4 +1,4 @@
-export type VisitStatus = 'dentro' | 'salió';
+export type VisitStatus = 'dentro' | 'salio';
 export type RoomStatus = 'disponible' | 'ocupado' | 'reservado' | 'mantenimiento';
 export type BookingStatus = 'en curso' | 'confirmada' | 'cancelada';
 export type SpaceStatus = 'disponible' | 'ocupado' | 'mantenimiento' | 'cerrado';

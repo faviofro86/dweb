@@ -1,0 +1,19 @@
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - nvm install 22
+        - nvm use 22
+        - npm ci
+    build:
+      commands:
+        - node scripts/configure-api-url.js
+        - npm run build
+  artifacts:
+    baseDirectory: dist/dweb-parcial/browser
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - node_modules/**/*

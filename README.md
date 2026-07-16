@@ -1,59 +1,59 @@
-# DwebParcial
+# dweb-frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.16.
+Frontend Angular para EdificioControl.
 
-## Development server
-
-To start a local development server, run:
+## Local
 
 ```bash
-ng serve
+npm install
+npm start
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+La app local usa `src/environments/environment.ts` y consume:
 
-## Code scaffolding
+```text
+http://localhost:3000/api
+```
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Build de produccion
 
 ```bash
-ng generate component component-name
+npm ci
+npm run build
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+La salida queda en:
 
-```bash
-ng generate --help
+```text
+dist/dweb-parcial/browser
 ```
 
-## Building
+## Despliegue en AWS Amplify
 
-To build the project run:
+Esta carpeta ya incluye `amplify.yml`. Amplify instalara dependencias con `npm ci`, generara `environment.production.ts` si defines una URL de API y publicara `dist/dweb-parcial/browser`.
 
-```bash
-ng build
+Pasos:
+
+1. Sube o conecta esta carpeta `front` en AWS Amplify Hosting.
+2. En variables de entorno de Amplify, define una de estas:
+
+```text
+AMPLIFY_API_URL=https://TU-BACKEND.elasticbeanstalk.com/api
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+o:
 
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
+```text
+API_URL=https://TU-BACKEND.elasticbeanstalk.com/api
 ```
 
-## Running end-to-end tests
+3. Verifica que el build use el archivo `amplify.yml` incluido.
+4. Para rutas internas de Angular, agrega en Amplify una regla de rewrite:
 
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
+```text
+Source: </^[^.]+$|\.(?!(css|gif|ico|jpg|js|png|txt|svg|woff|woff2)$)([^.]+$)/>
+Target: /index.html
+Type: 200 (Rewrite)
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+5. Cuando Amplify te entregue la URL del frontend, agregala en `CORS_ORIGIN` del backend Beanstalk.

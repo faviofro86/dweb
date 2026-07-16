@@ -1,10 +1,10 @@
-<div class="section-header"><h2 class="section-title">Control de espacios del edificio</h2><button class="btn btn-primary" (click)="openAdd()">＋ Agregar espacio</button></div>
+<div class="section-header"><h2 class="section-title">Control de espacios del edificio</h2><button class="btn btn-primary" (click)="openAdd()">+ Agregar espacio</button></div>
 <div class="grid-3">
   @for (space of state.spaces(); track space.id) {
     <article class="space-card">
       <div class="space-header">
         <div class="space-icon">{{ icon(space.tipo) }}</div>
-        <div><div class="space-name">{{ space.nombre }}</div><div class="space-loc">{{ space.piso }} · {{ space.tipo }}</div></div>
+        <div><div class="space-name">{{ space.nombre }}</div><div class="space-loc">{{ space.piso }} - {{ space.tipo }}</div></div>
       </div>
       <span class="badge space-status" [class]="badgeClass(space.estado)"><span class="badge-dot"></span>{{ statusLabel(space.estado) }}</span>
       @if (space.capacidad > 0) {
@@ -13,24 +13,26 @@
       }
       <div class="space-actions"><button class="btn btn-ghost compact" (click)="openEdit(space)">Editar</button><button class="btn btn-ghost compact" (click)="openOccupancy(space)">Actualizar</button></div>
     </article>
+  } @empty {
+    <div class="empty-row">No hay espacios registrados</div>
   }
 </div>
 
 @if (modalOpen) {
   <div class="modal-overlay active" (click)="modalOpen = false">
     <form class="modal" (click)="$event.stopPropagation()" (ngSubmit)="save()">
-      <div class="modal-header"><h2 class="modal-title">{{ editing ? 'Editar espacio' : 'Agregar espacio' }}</h2><button type="button" class="modal-close" (click)="modalOpen = false">✕</button></div>
+      <div class="modal-header"><h2 class="modal-title">{{ editing ? 'Editar espacio' : 'Agregar espacio' }}</h2><button type="button" class="modal-close" (click)="modalOpen = false">x</button></div>
       <div class="modal-body">
         <div class="form-row">
-          <div class="form-group"><label>Nombre del espacio *</label><input name="nombre" [(ngModel)]="form.nombre" placeholder="Ej: Cafetería"></div>
-          <div class="form-group"><label>Tipo *</label><select name="tipo" [(ngModel)]="form.tipo"><option>Cafetería</option><option>Estacionamiento</option><option>Gimnasio</option><option>Terraza</option><option>Almacén</option><option>Sala de espera</option><option>Lobby</option><option>Otro</option></select></div>
+          <div class="form-group"><label>Nombre del espacio *</label><input name="nombre" [(ngModel)]="form.nombre" placeholder="Ej: Cafeteria"></div>
+          <div class="form-group"><label>Tipo *</label><select name="tipo" [(ngModel)]="form.tipo"><option>Cafeteria</option><option>Estacionamiento</option><option>Gimnasio</option><option>Terraza</option><option>Almacen</option><option>Sala de espera</option><option>Lobby</option><option>Otro</option></select></div>
         </div>
         <div class="form-row">
-          <div class="form-group"><label>Piso / Ubicación</label><input name="piso" [(ngModel)]="form.piso" placeholder="Ej: Piso 1"></div>
-          <div class="form-group"><label>Capacidad máxima</label><input type="number" name="capacidad" [(ngModel)]="form.capacidad" min="0"></div>
+          <div class="form-group"><label>Piso / Ubicacion</label><input name="piso" [(ngModel)]="form.piso" placeholder="Ej: Piso 1"></div>
+          <div class="form-group"><label>Capacidad maxima</label><input type="number" name="capacidad" [(ngModel)]="form.capacidad" min="0"></div>
         </div>
         <div class="form-row">
-          <div class="form-group"><label>Ocupación actual</label><input type="number" name="ocupacion" [(ngModel)]="form.ocupacion" min="0"></div>
+          <div class="form-group"><label>Ocupacion actual</label><input type="number" name="ocupacion" [(ngModel)]="form.ocupacion" min="0"></div>
           <div class="form-group"><label>Estado</label><select name="estado" [(ngModel)]="form.estado"><option value="disponible">Disponible</option><option value="ocupado">Ocupado</option><option value="mantenimiento">Mantenimiento</option><option value="cerrado">Cerrado</option></select></div>
         </div>
       </div>
@@ -42,8 +44,8 @@
 @if (occupancyOpen && editing) {
   <div class="modal-overlay active" (click)="occupancyOpen = false">
     <form class="modal modal-small" (click)="$event.stopPropagation()" (ngSubmit)="saveOccupancy()">
-      <div class="modal-header"><h2 class="modal-title">Actualizar ocupación</h2><button type="button" class="modal-close" (click)="occupancyOpen = false">✕</button></div>
-      <div class="modal-body"><div class="form-group"><label>{{ editing.nombre }} (máx. {{ editing.capacidad }})</label><input type="number" name="occupancy" [(ngModel)]="occupancy" min="0" [max]="editing.capacidad"></div></div>
+      <div class="modal-header"><h2 class="modal-title">Actualizar ocupacion</h2><button type="button" class="modal-close" (click)="occupancyOpen = false">x</button></div>
+      <div class="modal-body"><div class="form-group"><label>{{ editing.nombre }} (max. {{ editing.capacidad }})</label><input type="number" name="occupancy" [(ngModel)]="occupancy" min="0" [max]="editing.capacidad"></div></div>
       <div class="modal-footer"><button type="button" class="btn btn-ghost" (click)="occupancyOpen = false">Cancelar</button><button class="btn btn-primary">Actualizar</button></div>
     </form>
   </div>

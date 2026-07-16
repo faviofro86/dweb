@@ -36,24 +36,27 @@ export class Spaces {
     this.occupancyOpen = true;
   }
 
-  save(): void {
+  async save(): Promise<void> {
     if (!this.form.nombre.trim() || this.form.capacidad < 0 || this.form.ocupacion < 0 ||
         this.form.ocupacion > this.form.capacidad) {
-      this.toast.show('Revisa el nombre, la capacidad y la ocupación', 'error');
+      this.toast.show('Revisa el nombre, la capacidad y la ocupacion', 'error');
       return;
     }
-    this.state.saveSpace({ ...this.form });
+    if (!await this.state.saveSpace({ ...this.form })) {
+      this.toast.show('No se pudo guardar el espacio', 'error');
+      return;
+    }
     this.modalOpen = false;
     this.toast.show('Espacio guardado correctamente');
   }
 
-  saveOccupancy(): void {
-    if (!this.editing || !this.state.updateOccupancy(this.editing.id, Number(this.occupancy))) {
-      this.toast.show('La ocupación debe estar entre 0 y la capacidad máxima', 'error');
+  async saveOccupancy(): Promise<void> {
+    if (!this.editing || !await this.state.updateOccupancy(this.editing.id, Number(this.occupancy))) {
+      this.toast.show('La ocupacion debe estar entre 0 y la capacidad maxima', 'error');
       return;
     }
     this.occupancyOpen = false;
-    this.toast.show('Ocupación actualizada');
+    this.toast.show('Ocupacion actualizada');
   }
 
   percent(space: Space): number {
@@ -74,10 +77,10 @@ export class Spaces {
   }
 
   icon(type: string): string {
-    return ({ Cafetería: '☕', Estacionamiento: 'P', Gimnasio: '🏋', Terraza: '⌂', Lobby: '▥', 'Sala de espera': '▣' } as Record<string, string>)[type] || '◆';
+    return ({ Cafeteria: 'C', Estacionamiento: 'P', Gimnasio: 'G', Terraza: 'T', Lobby: 'L', 'Sala de espera': 'E' } as Record<string, string>)[type] || 'S';
   }
 
   private emptyForm(): SpaceForm {
-    return { nombre: '', tipo: 'Cafetería', piso: '', capacidad: 0, ocupacion: 0, estado: 'disponible' };
+    return { nombre: '', tipo: 'Cafeteria', piso: '', capacidad: 0, ocupacion: 0, estado: 'disponible' };
   }
 }

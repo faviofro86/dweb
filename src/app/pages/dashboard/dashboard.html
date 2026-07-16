@@ -1,14 +1,14 @@
 <div class="stats-grid">
   <article class="stat-card">
-    <div class="stat-icon blue">👥</div>
+    <div class="stat-icon blue">U</div>
     <div><div class="stat-value">{{ state.activeVisits().length }}</div><div class="stat-label">Visitas hoy</div><div class="stat-sub">en edificio</div></div>
   </article>
   <article class="stat-card">
-    <div class="stat-icon green">▦</div>
+    <div class="stat-icon green">S</div>
     <div><div class="stat-value">{{ state.availableRooms().length }}</div><div class="stat-label">Salas disponibles</div><div class="stat-sub">de {{ state.rooms().length }} en total</div></div>
   </article>
   <article class="stat-card">
-    <div class="stat-icon orange">⌂</div>
+    <div class="stat-icon orange">R</div>
     <div><div class="stat-value">{{ state.todayBookings().length }}</div><div class="stat-label">Reuniones hoy</div><div class="stat-sub">programadas</div></div>
   </article>
   <article class="stat-card">
@@ -28,7 +28,7 @@
             <tr>
               <td><div class="td-name"><span class="avatar-text">{{ initials(visit.nombre) }}</span>{{ visit.nombre }}</div></td>
               <td class="muted">{{ visit.destino }}</td>
-              <td><span class="badge" [class.green]="visit.estado === 'dentro'" [class.gray]="visit.estado === 'salió'"><span class="badge-dot"></span>{{ visit.estado === 'dentro' ? 'En edificio' : 'Salió' }}</span></td>
+              <td><span class="badge" [class.green]="visit.estado === 'dentro'" [class.gray]="visit.estado === 'salio'"><span class="badge-dot"></span>{{ visit.estado === 'dentro' ? 'En edificio' : 'Salio' }}</span></td>
             </tr>
           }
         </tbody>
@@ -44,7 +44,7 @@
           @for (booking of state.todayBookings().slice(0, 5); track booking.id) {
             <tr>
               <td class="strong">{{ booking.sala }}</td>
-              <td class="muted">{{ booking.inicio }}–{{ booking.fin }}</td>
+              <td class="muted">{{ booking.inicio }}-{{ booking.fin }}</td>
               <td><span class="badge" [class.green]="booking.estado === 'en curso'" [class.blue]="booking.estado === 'confirmada'"><span class="badge-dot"></span>{{ booking.estado === 'en curso' ? 'En curso' : 'Confirmada' }}</span></td>
             </tr>
           }

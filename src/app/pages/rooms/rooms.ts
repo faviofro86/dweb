@@ -25,12 +25,12 @@ export class Rooms {
     this.modalOpen = true;
   }
 
-  save(): void {
+  async save(): Promise<void> {
     if (!this.form.sala || !this.form.org.trim() || !this.form.fecha || !this.form.inicio || !this.form.fin) {
       this.toast.show('Completa todos los campos obligatorios', 'error');
       return;
     }
-    if (!this.state.addBooking({ ...this.form })) {
+    if (!await this.state.addBooking({ ...this.form })) {
       this.toast.show('Revisa disponibilidad, horario y capacidad de la sala', 'error');
       return;
     }
@@ -38,9 +38,12 @@ export class Rooms {
     this.toast.show('Reserva confirmada');
   }
 
-  cancel(id: number): void {
-    this.state.deleteBooking(id);
-    this.toast.show('Reserva cancelada');
+  async cancel(id: number): Promise<void> {
+    if (await this.state.deleteBooking(id)) {
+      this.toast.show('Reserva cancelada');
+    } else {
+      this.toast.show('No se pudo cancelar la reserva', 'error');
+    }
   }
 
   roomClass(status: Room['estado']): string {

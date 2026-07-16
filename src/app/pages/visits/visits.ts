@@ -29,28 +29,40 @@ export class Visits {
     return name.split(' ').slice(0, 2).map((word) => word[0]).join('').toUpperCase();
   }
 
-  checkOut(id: number): void {
-    this.state.checkOut(id);
-    this.toast.show('Salida registrada correctamente');
+  async checkOut(id: number): Promise<void> {
+    if (await this.state.checkOut(id)) {
+      this.toast.show('Salida registrada correctamente');
+    } else {
+      this.toast.show('No se pudo registrar la salida', 'error');
+    }
   }
 
-  approve(id: number): void {
-    this.state.approveVisit(id);
-    this.toast.show('Visita aprobada y registrada');
+  async approve(id: number): Promise<void> {
+    if (await this.state.approveVisit(id)) {
+      this.toast.show('Visita aprobada y registrada');
+    } else {
+      this.toast.show('No se pudo aprobar la visita', 'error');
+    }
   }
 
-  reject(id: number): void {
-    this.state.rejectVisit(id);
-    this.toast.show('Visita rechazada', 'error');
+  async reject(id: number): Promise<void> {
+    if (await this.state.rejectVisit(id)) {
+      this.toast.show('Visita rechazada', 'error');
+    } else {
+      this.toast.show('No se pudo rechazar la visita', 'error');
+    }
   }
 
-  save(): void {
+  async save(): Promise<void> {
     if (!this.form.nombre.trim() || !/^\d{8}$/.test(this.form.dni) ||
         !this.form.destino || !this.form.persona.trim() || !this.form.motivo) {
-      this.toast.show('Completa los campos obligatorios y usa un DNI de 8 dígitos', 'error');
+      this.toast.show('Completa los campos obligatorios y usa un DNI de 8 digitos', 'error');
       return;
     }
-    this.state.registerVisit({ ...this.form });
+    if (!await this.state.registerVisit({ ...this.form })) {
+      this.toast.show('No se pudo registrar la visita', 'error');
+      return;
+    }
     this.form = this.emptyForm();
     this.modalOpen = false;
     this.toast.show('Visita registrada correctamente');
